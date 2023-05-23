@@ -1,0 +1,38 @@
+=============== May 16, 2023 (CST) ===============
+15:06:02.780233 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:06:02.781760 db@open opening
+15:06:02.781760 version@stat F·[] S·0B[] Sc·[]
+15:06:02.782762 db@janitor F·2 G·0
+15:06:02.782762 db@open done T·1.0021ms
+15:06:02.782762 db@close closing
+15:06:02.782762 db@close done T·0s
+=============== May 16, 2023 (CST) ===============
+15:06:02.782762 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+15:06:02.787306 version@stat F·[] S·0B[] Sc·[]
+15:06:02.787306 db@open opening
+15:06:02.787306 journal@recovery F·1
+15:06:02.787306 journal@recovery recovering @1
+15:06:02.789528 version@stat F·[] S·0B[] Sc·[]
+15:06:02.792518 db@janitor F·2 G·0
+15:06:02.792518 db@open done T·5.2128ms
+=============== May 16, 2023 (CST) ===============
+16:34:49.346405 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+16:34:49.346405 version@stat F·[] S·0B[] Sc·[]
+16:34:49.346405 db@open opening
+16:34:49.346405 journal@recovery F·1
+16:34:49.346405 journal@recovery recovering @2
+16:34:49.347916 memdb@flush created L0@4 N·3 S·152B "_\x00f,v1":"myc..l\x00\a,d2"
+16:34:49.348930 version@stat F·[1] S·152B[152B] Sc·[0.25]
+16:34:49.351919 db@janitor F·3 G·0
+16:34:49.351919 db@open done T·5.5135ms
+16:34:49.352916 db@close closing
+16:34:49.352916 db@close done T·0s
+=============== May 16, 2023 (CST) ===============
+16:34:49.352916 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed
+16:34:49.359931 version@stat F·[1] S·152B[152B] Sc·[0.25]
+16:34:49.359931 db@open opening
+16:34:49.359931 journal@recovery F·1
+16:34:49.359931 journal@recovery recovering @5
+16:34:49.359931 version@stat F·[1] S·152B[152B] Sc·[0.25]
+16:34:49.362920 db@janitor F·3 G·0
+16:34:49.362920 db@open done T·2.9891ms
