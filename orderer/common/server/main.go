@@ -108,7 +108,10 @@ func Main() {
 	err = signer.Verify(msg, sigma)
 	if err == nil {
 		println("验签成功")
+	} else {
+		println("验签失败")
 	}
+
 	println("----------------------------------------")
 
 	opsSystem := newOperationsSystem(conf.Operations, conf.Metrics)

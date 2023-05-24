@@ -167,17 +167,20 @@ type sm2PublicKeyImportOptsKeyImporter struct {
 }
 
 func (*sm2PublicKeyImportOptsKeyImporter) KeyImport(raw interface{}, opts bccsp.KeyImportOpts) (bccsp.Key, error) {
-	der, ok := raw.([]byte)
+	//der, ok := raw.([]byte)
+	//ok = true
+	//if !ok {
+	//	return nil, errors.New("[GMSM2PublicKeyImportOpts] Invalid raw material. Expected byte array.")
+	//}
+	//
+	//if len(der) == 0 {
+	//	return nil, errors.New("[GMSM2PublicKeyImportOpts] Invalid raw. It must not be nil.")
+	//}
+	x509Cert, ok := raw.(*x509.Certificate)
 	if !ok {
-		return nil, errors.New("[GMSM2PublicKeyImportOpts] Invalid raw material. Expected byte array.")
+		return nil, errors.New("Invalid raw material. Expected *x509.Certificate.")
 	}
+	publicKey, ok := x509Cert.PublicKey.(*ecdsa.PublicKey)
 
-	if len(der) == 0 {
-		return nil, errors.New("[GMSM2PublicKeyImportOpts] Invalid raw. It must not be nil.")
-	}
-	gmsm2SK, err := x509.ParseSm2PublicKey(der)
-	if err != nil {
-		return nil, fmt.Errorf("Failed converting to GMSM2 public key [%s]", err)
-	}
-	return &sm2.Sm2PublicKey{(*sm2.PublicKey)(gmsm2SK)}, nil
+	return &sm2.Sm2PublicKey{(*sm2.PublicKey)(publicKey)}, nil
 }

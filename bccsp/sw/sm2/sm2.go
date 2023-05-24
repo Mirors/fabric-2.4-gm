@@ -75,6 +75,7 @@ var one = new(big.Int).SetInt64(1)
 var two = new(big.Int).SetInt64(2)
 
 func (v *Signer) Sign(k bccsp.Key, digest []byte, opts bccsp.SignerOpts) ([]byte, error) {
+	initonce.Do(initP256Sm2)
 	r, s, err := Sm2Sign(k.(*Sm2PrivateKey).PrivKey, digest, nil, rand.Reader)
 	if err != nil {
 		return nil, err

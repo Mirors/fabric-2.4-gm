@@ -48,6 +48,7 @@ func NewWithParams(securityLevel int, hashFamily string, keyStore bccsp.KeyStore
 	if err != nil {
 		return nil, err
 	}
+	swbccsp.conf = conf
 
 	// Notice that errors are ignored here because some test will fail if one
 	// of the following call fails.
