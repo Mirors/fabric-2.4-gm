@@ -34,6 +34,7 @@ var logger = flogging.MustGetLogger("bccsp_sw")
 type CSP struct {
 	ks bccsp.KeyStore
 
+	conf          *config
 	KeyGenerators map[reflect.Type]KeyGenerator
 	KeyDerivers   map[reflect.Type]KeyDeriver
 	KeyImporters  map[reflect.Type]KeyImporter
@@ -59,7 +60,7 @@ func New(keyStore bccsp.KeyStore) (*CSP, error) {
 	keyImporters := make(map[reflect.Type]KeyImporter)
 
 	csp := &CSP{
-		keyStore,
+		keyStore, nil,
 		keyGenerators, keyDerivers, keyImporters, encryptors,
 		decryptors, signers, verifiers, hashers,
 	}

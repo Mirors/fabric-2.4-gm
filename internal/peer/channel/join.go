@@ -91,7 +91,9 @@ func executeJoin(cf *ChannelCmdFactory, spec *pb.ChaincodeSpec) (err error) {
 	}
 
 	var signedProp *pb.SignedProposal
+	//此处执行签名操作
 	signedProp, err = protoutil.GetSignedProposal(prop, cf.Signer)
+
 	if err != nil {
 		return fmt.Errorf("Error creating signed proposal %s", err)
 	}

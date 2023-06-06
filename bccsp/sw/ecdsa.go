@@ -48,6 +48,7 @@ func verifyECDSA(k *ecdsa.PublicKey, signature, digest []byte, opts bccsp.Signer
 		return false, fmt.Errorf("Failed unmashalling signature [%s]", err)
 	}
 	//判断是否为lowS，即是在N/2范围内
+	//在此处出现错误
 	lowS, err := utils.IsLowS(k, s)
 	if err != nil {
 		return false, err

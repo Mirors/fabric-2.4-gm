@@ -31,7 +31,7 @@ General:
         # It is not required to be set, but can be used to augment the set of TLS CA certificates
         # available from the MSPs of each channel’s configuration.
         RootCAs:
-          - orderer/tls/ca.crt
+            - orderer/tls/ca.crt
         # Require client certificates / mutual TLS for inbound connections.
         ClientAuthRequired: false
         # If mutual TLS is enabled, ClientRootCAs contains a list of additional root certificates
@@ -176,7 +176,7 @@ General:
 FileLedger:
 
     # Location: The directory to store the blocks in.
-    Location: D:/GoWorks/src/fabric-gm-cgs-2.4/dev-network/production/orderer
+    Location: D:/GoWorks/src/fabric-2.4-gm/dev-network/production/orderer
 
 
 ################################################################################
@@ -239,18 +239,18 @@ Metrics:
 
     # The statsd configuration
     Statsd:
-      # network type: tcp or udp
-      Network: udp
+        # network type: tcp or udp
+        Network: udp
 
-      # the statsd server address
-      Address: 127.0.0.1:8125
+        # the statsd server address
+        Address: 127.0.0.1:8125
 
-      # The interval at which locally cached counters and gauges are pushed
-      # to statsd; timings are pushed immediately
-      WriteInterval: 30s
+        # The interval at which locally cached counters and gauges are pushed
+        # to statsd; timings are pushed immediately
+        WriteInterval: 30s
 
-      # The prefix is prepended to all emitted statsd metrics
-      Prefix:
+        # The prefix is prepended to all emitted statsd metrics
+        Prefix:
 
 ################################################################################
 #
@@ -261,18 +261,18 @@ Metrics:
 ################################################################################
 Admin:
     # host and port for the admin server
-    ListenAddress: 127.0.0.1:9443
+    ListenAddress: 127.0.0.1:9444
 
     # TLS configuration for the admin endpoint
     TLS:
         # TLS enabled
-        Enabled: true
+        Enabled: false
 
         # Certificate is the location of the PEM encoded TLS certificate
-        Certificate: D:\GoWorks\src\fabric2.4\dev-network\orderer\tls\server.crt
+        Certificate: D:\GoWorks\src\fabric-2.4-gm\dev-network\orderer\tls\server.crt
 
         # PrivateKey points to the location of the PEM-encoded key
-        PrivateKey: D:\GoWorks\src\fabric2.4\dev-network\orderer\tls\server.key
+        PrivateKey: D:\GoWorks\src\fabric-2.4-gm\dev-network\orderer\tls\server.key
 
         # Most admin service endpoints require client authentication when TLS
         # is enabled. ClientAuthRequired requires client certificate authentication
@@ -280,11 +280,11 @@ Admin:
         #
         # NOTE: When TLS is enabled, the admin endpoint requires mutual TLS. The
         # orderer will panic on startup if this value is set to false.
-        ClientAuthRequired: true
+        ClientAuthRequired: false
 
         # Paths to PEM encoded ca certificates to trust for client authentication
         ClientRootCAs:
-            - D:\GoWorks\src\fabric2.4\dev-network\orderer\tls\ca.crt
+            - D:\GoWorks\src\fabric-2.4-gm\dev-network\orderer\tls\ca.crt
 
 ################################################################################
 #
@@ -317,8 +317,8 @@ Consensus:
 
     # WALDir specifies the location at which Write Ahead Logs for etcd/raft are
     # stored. Each channel will have its own subdir named after channel ID.
-    WALDir: D:/GoWorks/src/fabric2.4/dev-network/production/orderer/etcdraft/wal
+    WALDir: D:/GoWorks/src/fabric-2.4-gm/dev-network/production/orderer/etcdraft/wal
 
     # SnapDir specifies the location at which snapshots for etcd/raft are
     # stored. Each channel will have its own subdir named after channel ID.
-    SnapDir: D:/GoWorks/src/fabric2.4/dev-network/production/orderer/etcdraft/snapshot
+    SnapDir: D:/GoWorks/src/fabric-2.4-gm/dev-network/production/orderer/etcdraft/snapshot

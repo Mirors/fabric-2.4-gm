@@ -1,0 +1,78 @@
+version: '2.4'
+
+networks:
+  blockchain:
+    external: true
+
+services:
+  orderer1.zjhnorderer3.com:
+    container_name: orderer1.zjhnorderer3.com
+    hostname: orderer1.zjhnorderer3.com
+    image: hyperledger/fabric-orderer:2.4
+    command: orderer
+    restart: always
+    working_dir: /opt/gopath/src/github.com/hyperledger/fabric
+    networks:
+      - blockchain
+    environment:
+      # 创世区块
+      - ORDERER_GENERAL_BCCSP_DEFAULT=GM
+      - ORDERER_GENERAL_BOOTSTRAPMETHOD=none
+      - ORDERER_CHANNELPARTICIPATION_ENABLED=true
+      # 账本
+      - ORDERER_GENERAL_LEDGERTYPE=file                                               # 账本类型，生产环境下推荐file, 通常保存路径:/var/hyperledger/production/orderer
+      - ORDERER_FILELEDGER_LOCATION=/var/hyperledger/production/orderer               # 容器中 区块文件 存放位置的位置
+      # 监听
+      - ORDERER_GENERAL_LISTENPORT=50183                                              # 监听端口，该端口号会映射到主机端口
+      - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0                                         # 监听地址,指定服务的特定网络接口的地址或全网（0.0.0.0)
+      # MSP
+      - ORDERER_GENERAL_LOCALMSPID=MSP-orderer1.zjhnorderer3.com                      # Orderer 所关联的 MSP-ID，需要与联盟配置中的组织的 ID 名称一致
+      - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp                      # 容器中 MSP 目录所在的路径
+      # TLS
+      - ORDERER_GENERAL_TLS_ENABLED=true                                              # 是否启用服务端 tls 认证
+      - ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt       # 服务端 tls 证书
+      - ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key        # 服务端 tls 秘钥
+      - ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]             # 服务端 tls ca根证书
+      - ORDERER_GENERAL_TLS_ClientAuthRequired=false                                  # 是否启用 客户端 tls 认证
+      # Cluster:  order服务节点之间的通讯设置
+      - ORDERER_GENERAL_CLUSTER_LISTENPORT=50185                                      # 共识端口, 共识集群间通讯必须启用tls，以下是服务端和客户端tls证书
+      - ORDERER_GENERAL_CLUSTER_LISTENADDRESS=0.0.0.0
+      - ORDERER_GENERAL_CLUSTER_SERVERCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_SERVERPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_GENERAL_CLUSTER_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_GENERAL_CLUSTER_CLIENTCERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_GENERAL_CLUSTER_CLIENTPRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ENABLED=true
+      - ORDERER_ADMIN_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt
+      - ORDERER_ADMIN_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key
+      - ORDERER_ADMIN_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_TLS_CLIENTROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]
+      - ORDERER_ADMIN_LISTENADDRESS=0.0.0.0:50186          # 管理Orderer节点地址，可修改限制对方ip地址
+      # Operations
+      - ORDERER_OPERATIONS_LISTENADDRESS=127.0.0.1:50184     # operation RESTful API 运维端口， 可心跳和设置日志, 可修改限制对方ip地址
+      - ORDERER_METRICS_PROVIDER=prometheus                  # prometheus will pull metrics from orderer via /metrics RESTful API
+      # 日志
+      - FABRIC_LOGGING_SPEC=INFO                             # 日志级别
+      - FABRIC_LOGGING_GOSSIP=WARNING
+      - FABRIC_LOGGING_LEDGER=INFO
+      - FABRIC_LOGGING_MSP=WARNING
+      - FABRIC_LOGGING_POLICIES=WARNING
+      - FABRIC_LOGGING_GRPC=ERROR
+      - FABRIC_LOGGING_FORMAT=%{color}[%{id:03x} %{time:01-02 15:04:05.00 MST}] [%{longpkg}] %{callpath} -> %{level:.4s}%{color:reset} %{message}   # 日志格式
+      # 通讯调试日志
+      # - ORDERER_DEBUG_BROADCASTTRACEDIR=/var/hyperledger/production/orderer/debug/BroadcastTraceDir
+      # - ORDERER_DEBUG_DELIVERTRACEDIR=/var/hyperledger/production/orderer/debug/DeliverTraceDir
+    volumes:
+      - ./production:/var/hyperledger/production/orderer                 # 物理机 账本 相对路径  注意：网络启动后，注意保存
+      - ./msp:/var/hyperledger/orderer/msp                               # 物理机 MSP 相对路径   注意：网络启动后，注意保存和备份
+      - ./tls:/var/hyperledger/orderer/tls                               # 物理机 TLS 相对路径   注意：网络启动后，注意保存和备份
+      - /etc/localtime:/etc/localtime                                    # 本地时间
+    ports:
+      - 50183:50183 # gRPC
+      - 50184:50184 # Operation REST
+      - 50185:50185 # CLUSTER
+      - 50186:50186 # ADMIN
+    extra_hosts:  # 需要通讯的的节点ip映射，启动后的服务容器中/etc/hosts添加
+      - "orderer1.zjhnorderer1.com:172.18.100.13"
+      - "orderer1.zjhnorderer2.com:172.18.100.13"
+      - "orderer1.zjhnorderer3.com:172.18.100.13"

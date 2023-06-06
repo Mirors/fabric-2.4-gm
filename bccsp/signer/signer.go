@@ -8,11 +8,13 @@ package signer
 
 import (
 	"crypto"
-	"github.com/tjfoc/gmsm/x509"
-	"io"
-
+	"crypto/x509/pkix"
+	"encoding/asn1"
 	"github.com/hyperledger/fabric/bccsp"
+	"github.com/hyperledger/fabric/bccsp/sw/sm2"
 	"github.com/pkg/errors"
+	"io"
+	"math/big"
 )
 
 // bccspCryptoSigner is the BCCSP-based implementation of a crypto.Signer
@@ -20,6 +22,12 @@ type bccspCryptoSigner struct {
 	csp bccsp.BCCSP
 	key bccsp.Key
 	pk  interface{}
+}
+
+type publicKeyInfo struct {
+	Raw       asn1.RawContent
+	Algorithm pkix.AlgorithmIdentifier
+	PublicKey asn1.BitString
 }
 
 // New returns a new BCCSP-based crypto.Signer
@@ -47,7 +55,9 @@ func New(csp bccsp.BCCSP, key bccsp.Key) (crypto.Signer, error) {
 		return nil, errors.Wrap(err, "failed marshalling public key")
 	}
 
-	pk, err := x509.ParsePKIXPublicKey(raw)
+	//pk, err := x509.ParseSM2PublicKeyFromBytes(raw)
+	pk, err := SM2ParsePKIXPublicKey(raw)
+
 	if err != nil {
 		return nil, errors.Wrap(err, "failed marshalling der to public key")
 	}
@@ -75,4 +85,26 @@ func (s *bccspCryptoSigner) Public() crypto.PublicKey {
 // the hash (as digest) and the hash function (as opts) to Sign.
 func (s *bccspCryptoSigner) Sign(rand io.Reader, digest []byte, opts crypto.SignerOpts) ([]byte, error) {
 	return s.csp.Sign(s.key, digest, opts)
+}
+
+func SM2ParsePKIXPublicKey(derBytes []byte) (pub interface{}, err error) {
+	var pki publicKeyInfo
+
+	if rest, err := asn1.Unmarshal(derBytes, &pki); err != nil {
+		return nil, err
+	} else if len(rest) != 0 {
+		return nil, errors.New("x509: trailing data after ASN.1 of public-key")
+	}
+	return parseSM2PublicKey(&pki)
+}
+
+func parseSM2PublicKey(pki *publicKeyInfo) (*sm2.PublicKey, error) {
+	curve := sm2.P256Sm2()
+	pubKey := &sm2.PublicKey{
+		Curve: curve,
+		X:     new(big.Int).SetBytes(pki.PublicKey.RightAlign()),
+		Y:     new(big.Int).SetBytes(pki.PublicKey.RightAlign()[32:]),
+	}
+
+	return pubKey, nil
 }

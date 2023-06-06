@@ -74,8 +74,29 @@ func ParsePKIXPublicKey(derBytes []byte) (pub interface{}, err error) {
 	if algo == UnknownPublicKeyAlgorithm {
 		return nil, errors.New("x509: unknown public key algorithm")
 	}
+	if algo == SM2 {
+		// Parse SM2 public key
+		return parseSM2PublicKey(&pki)
+	}
 	return parsePublicKey(algo, &pki)
 }
+
+func SM2ParsePKIXPublicKey(derBytes []byte) (pub interface{}, err error) {
+	var pki publicKeyInfo
+
+	if rest, err := asn1.Unmarshal(derBytes, &pki); err != nil {
+		return nil, err
+	} else if len(rest) != 0 {
+		return nil, errors.New("x509: trailing data after ASN.1 of public-key")
+	}
+	algo := getPublicKeyAlgorithmFromOID(pki.Algorithm.Algorithm)
+	if algo == UnknownPublicKeyAlgorithm {
+		return nil, errors.New("x509: unknown public key algorithm")
+	}
+	return parseSM2PublicKey(&pki)
+}
+
+
 
 func marshalPublicKey(pub interface{}) (publicKeyBytes []byte, publicKeyAlgorithm pkix.AlgorithmIdentifier, err error) {
 	switch pub := pub.(type) {
@@ -614,6 +635,7 @@ var (
 	oidPublicKeyRSA   = asn1.ObjectIdentifier{1, 2, 840, 113549, 1, 1, 1}
 	oidPublicKeyDSA   = asn1.ObjectIdentifier{1, 2, 840, 10040, 4, 1}
 	oidPublicKeyECDSA = asn1.ObjectIdentifier{1, 2, 840, 10045, 2, 1}
+	oidPublicKeySM2   = asn1.ObjectIdentifier{1, 2, 156, 10197, 1, 301}
 )
 
 func getPublicKeyAlgorithmFromOID(oid asn1.ObjectIdentifier) PublicKeyAlgorithm {
@@ -625,6 +647,7 @@ func getPublicKeyAlgorithmFromOID(oid asn1.ObjectIdentifier) PublicKeyAlgorithm 
 	case oid.Equal(oidPublicKeyECDSA):
 		return ECDSA
 	}
+
 	return UnknownPublicKeyAlgorithm
 }
 
@@ -2461,4 +2484,35 @@ func (c *Certificate) FromX509Certificate(x509Cert *x509.Certificate) {
 	for _, val := range x509Cert.ExtKeyUsage {
 		c.ExtKeyUsage = append(c.ExtKeyUsage, ExtKeyUsage(val))
 	}
+}
+
+//////
+func ParseSM2PublicKeyFromBytes(raw []byte) (*sm2.PublicKey, error) {
+	block, _ := pem.Decode(raw)
+	if block == nil {
+		return nil, errors.New("failed to parse PEM block containing the public key")
+	}
+
+	pubKeyInterface, err := x509.ParsePKIXPublicKey(block.Bytes)
+	if err != nil {
+		return nil, err
+	}
+
+	sm2PublicKey, ok := pubKeyInterface.(*sm2.PublicKey)
+	if !ok {
+		return nil, errors.New("the parsed public key is not of SM2 type")
+	}
+
+	return sm2PublicKey, nil
+}
+
+func parseSM2PublicKey(pki *publicKeyInfo) (*sm2.PublicKey, error) {
+	curve := sm2.P256Sm2()
+	pubKey := &sm2.PublicKey{
+		Curve: curve,
+		X:     new(big.Int).SetBytes(pki.PublicKey.RightAlign()),
+		Y:     new(big.Int).SetBytes(pki.PublicKey.RightAlign()[32:]),
+	}
+
+	return pubKey, nil
 }

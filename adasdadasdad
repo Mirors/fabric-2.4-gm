@@ -1,0 +1,102 @@
+warning: in the working copy of 'dev-network/production/orderer/index/CURRENT', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'dev-network/production/orderer/index/CURRENT.bak', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'dev-network/production/orderer/index/LOG', LF will be replaced by CRLF the next time Git touches it
+[1mdiff --git a/dev-network/core.yaml b/dev-network/core.yaml[m
+[1mindex 82ca297..6e068c4 100644[m
+[1m--- a/dev-network/core.yaml[m
+[1m+++ b/dev-network/core.yaml[m
+[36m@@ -313,7 +313,7 @@[m [mpeer:[m
+     # Path on the file system where peer will store data (eg ledger). This[m
+     # location must be access control protected to prevent unintended[m
+     # modification that might corrupt the peer operations.[m
+[31m-    fileSystemPath: D:/GoWorks/src/fabric2.4/dev-network/production/peer1[m
+[32m+[m[32m    fileSystemPath: D:/GoWorks/src/fabric-2.4-gm/dev-network/production/peer1[m
+ [m
+     # BCCSP (Blockchain crypto provider): Select which crypto implementation or[m
+     # library to use[m
+[36m@@ -728,7 +728,7 @@[m [mledger:[m
+ [m
+   snapshots:[m
+     # Path on the file system where peer will store ledger snapshots[m
+[31m-    rootDir: D:\GoWorks\src\fabric2.4\dev-network\production\snapshots[m
+[32m+[m[32m    rootDir: D:\GoWorks\src\fabric-2.4-gm\dev-network\production\snapshots[m
+ [m
+ ###############################################################################[m
+ #[m
+[1mdiff --git a/dev-network/orderer.yaml b/dev-network/orderer.yaml[m
+[1mindex dd5069f..341f03f 100644[m
+[1m--- a/dev-network/orderer.yaml[m
+[1m+++ b/dev-network/orderer.yaml[m
+[36m@@ -176,7 +176,7 @@[m [mGeneral:[m
+ FileLedger:[m
+ [m
+     # Location: The directory to store the blocks in.[m
+[31m-    Location: D:/GoWorks/src/fabric-gm-cgs-2.4/dev-network/production/orderer[m
+[32m+[m[32m    Location: D:/GoWorks/src/fabric-2.4-gm/dev-network/production/orderer[m
+ [m
+ [m
+ ################################################################################[m
+[36m@@ -269,10 +269,10 @@[m [mAdmin:[m
+         Enabled: true[m
+ [m
+         # Certificate is the location of the PEM encoded TLS certificate[m
+[31m-        Certificate: D:\GoWorks\src\fabric2.4\dev-network\orderer\tls\server.crt[m
+[32m+[m[32m        Certificate: D:\GoWorks\src\fabric-2.4-gm\dev-network\orderer\tls\server.crt[m
+ [m
+         # PrivateKey points to the location of the PEM-encoded key[m
+[31m-        PrivateKey: D:\GoWorks\src\fabric2.4\dev-network\orderer\tls\server.key[m
+[32m+[m[32m        PrivateKey: D:\GoWorks\src\fabric-2.4-gm\dev-network\orderer\tls\server.key[m
+ [m
+         # Most admin service endpoints require client authentication when TLS[m
+         # is enabled. ClientAuthRequired requires client certificate authentication[m
+[36m@@ -284,7 +284,7 @@[m [mAdmin:[m
+ [m
+         # Paths to PEM encoded ca certificates to trust for client authentication[m
+         ClientRootCAs:[m
+[31m-            - D:\GoWorks\src\fabric2.4\dev-network\orderer\tls\ca.crt[m
+[32m+[m[32m            - D:\GoWorks\src\fabric-2.4-gm\dev-network\orderer\tls\ca.crt[m
+ [m
+ ################################################################################[m
+ #[m
+[1mdiff --git a/dev-network/production/orderer/index/CURRENT b/dev-network/production/orderer/index/CURRENT[m
+[1mindex 6ba31a3..625d147 100644[m
+[1m--- a/dev-network/production/orderer/index/CURRENT[m
+[1m+++ b/dev-network/production/orderer/index/CURRENT[m
+[36m@@ -1 +1 @@[m
+[31m-MANIFEST-000009[m
+[32m+[m[32mMANIFEST-000013[m
+[1mdiff --git a/dev-network/production/orderer/index/CURRENT.bak b/dev-network/production/orderer/index/CURRENT.bak[m
+[1mindex 875cf23..5b54010 100644[m
+[1m--- a/dev-network/production/orderer/index/CURRENT.bak[m
+[1m+++ b/dev-network/production/orderer/index/CURRENT.bak[m
+[36m@@ -1 +1 @@[m
+[31m-MANIFEST-000007[m
+[32m+[m[32mMANIFEST-000011[m
+[1mdiff --git a/dev-network/production/orderer/index/LOG b/dev-network/production/orderer/index/LOG[m
+[1mindex c657b9e..82c296f 100644[m
+[1m--- a/dev-network/production/orderer/index/LOG[m
+[1m+++ b/dev-network/production/orderer/index/LOG[m
+[36m@@ -43,3 +43,19 @@[m
+ 21:43:04.284138 version@stat F·[] S·0B[] Sc·[][m
+ 21:43:04.287984 db@janitor F·2 G·0[m
+ 21:43:04.287984 db@open done T·5.8773ms[m
+[32m+[m[32m=============== May 23, 2023 (CST) ===============[m
+[32m+[m[32m19:29:05.961716 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed[m
+[32m+[m[32m19:29:05.962751 version@stat F·[] S·0B[] Sc·[][m
+[32m+[m[32m19:29:05.962751 db@open opening[m
+[32m+[m[32m19:29:05.963267 version@stat F·[] S·0B[] Sc·[][m
+[32m+[m[32m19:29:05.966421 db@janitor F·2 G·0[m
+[32m+[m[32m19:29:05.966421 db@open done T·3.6698ms[m
+[32m+[m[32m=============== Jun 5, 2023 (CST) ===============[m
+[32m+[m[32m10:17:01.667268 log@legend F·NumFile S·FileSize N·Entry C·BadEntry B·BadBlock Ke·KeyError D·DroppedEntry L·Level Q·SeqNum T·TimeElapsed[m
+[32m+[m[32m10:17:01.675523 version@stat F·[] S·0B[] Sc·[][m
+[32m+[m[32m10:17:01.675523 db@open opening[m
+[32m+[m[32m10:17:01.675523 journal@recovery F·1[m
+[32m+[m[32m10:17:01.676036 journal@recovery recovering @10[m
+[32m+[m[32m10:17:01.703379 version@stat F·[] S·0B[] Sc·[][m
+[32m+[m[32m10:17:01.744495 db@janitor F·2 G·0[m
+[32m+[m[32m10:17:01.744495 db@open done T·68.9725ms[m
+[1mdiff --git a/dev-network/production/orderer/index/MANIFEST-000009 b/dev-network/production/orderer/index/MANIFEST-000009[m
+[1mdeleted file mode 100644[m
+[1mindex 3dd087f..0000000[m
+Binary files a/dev-network/production/orderer/index/MANIFEST-000009 and /dev/null differ
