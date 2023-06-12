@@ -44,7 +44,7 @@ func TestHashingAlgorithm(t *testing.T) {
 	cc = &ChannelConfig{protos: &ChannelProtos{HashingAlgorithm: &cb.HashingAlgorithm{Name: bccsp.SHA256}}}
 	require.NoError(t, cc.validateHashingAlgorithm(), "Allowed hashing algorithm SHA256 supplied")
 
-	require.Equal(t, reflect.ValueOf(util.ComputeSHA256).Pointer(), reflect.ValueOf(cc.HashingAlgorithm()).Pointer(),
+	require.Equal(t, reflect.ValueOf(util.ComputeSM3).Pointer(), reflect.ValueOf(cc.HashingAlgorithm()).Pointer(),
 		"Unexpected hashing algorithm returned")
 
 	cc = &ChannelConfig{protos: &ChannelProtos{HashingAlgorithm: &cb.HashingAlgorithm{Name: bccsp.SHA3_256}}}

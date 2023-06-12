@@ -9,10 +9,10 @@ package smartbft
 import (
 	"bytes"
 	"crypto/sha256"
-	"crypto/x509"
 	"encoding/hex"
 	"encoding/pem"
 	"fmt"
+	"github.com/tjfoc/gmsm/x509"
 	"sort"
 	"time"
 

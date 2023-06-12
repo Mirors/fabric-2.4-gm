@@ -7,12 +7,11 @@ package csp
 
 import (
 	"crypto"
-	"crypto/ecdsa"
-	"crypto/elliptic"
 	"crypto/rand"
-	"crypto/x509"
 	"encoding/asn1"
 	"encoding/pem"
+	"github.com/tjfoc/gmsm/sm2"
+	"github.com/tjfoc/gmsm/x509"
 	"io"
 	"math/big"
 	"os"
@@ -24,8 +23,8 @@ import (
 
 // LoadPrivateKey loads a private key from a file in keystorePath.  It looks
 // for a file ending in "_sk" and expects a PEM-encoded PKCS8 EC private key.
-func LoadPrivateKey(keystorePath string) (*ecdsa.PrivateKey, error) {
-	var priv *ecdsa.PrivateKey
+func LoadPrivateKey(keystorePath string) (*sm2.PrivateKey, error) {
+	var priv *sm2.PrivateKey
 
 	walkFunc := func(path string, info os.FileInfo, pathErr error) error {
 		if !strings.HasSuffix(path, "_sk") {
@@ -53,33 +52,33 @@ func LoadPrivateKey(keystorePath string) (*ecdsa.PrivateKey, error) {
 	return priv, err
 }
 
-func parsePrivateKeyPEM(rawKey []byte) (*ecdsa.PrivateKey, error) {
+func parsePrivateKeyPEM(rawKey []byte) (*sm2.PrivateKey, error) {
 	block, _ := pem.Decode(rawKey)
 	if block == nil {
 		return nil, errors.New("bytes are not PEM encoded")
 	}
 
-	key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+	key, err := x509.ParsePKCS8PrivateKey(block.Bytes, nil)
 	if err != nil {
 		return nil, errors.WithMessage(err, "pem bytes are not PKCS8 encoded ")
 	}
 
-	priv, ok := key.(*ecdsa.PrivateKey)
-	if !ok {
-		return nil, errors.New("pem bytes do not contain an EC private key")
-	}
-	return priv, nil
+	// priv, ok := key.(*sm2.PrivateKey)
+	// if !ok {
+	// 	return nil, errors.New("pem bytes do not contain an EC private key")
+	// }
+	return key, nil
 }
 
 // GeneratePrivateKey creates an EC private key using a P-256 curve and stores
 // it in keystorePath.
-func GeneratePrivateKey(keystorePath string) (*ecdsa.PrivateKey, error) {
-	priv, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+func GeneratePrivateKey(keystorePath string) (*sm2.PrivateKey, error) {
+	priv, err := sm2.GenerateKey(rand.Reader)
 	if err != nil {
 		return nil, errors.WithMessage(err, "failed to generate private key")
 	}
 
-	pkcs8Encoded, err := x509.MarshalPKCS8PrivateKey(priv)
+	pkcs8Encoded, err := x509.MarshalSm2PrivateKey(priv, nil)
 	if err != nil {
 		return nil, errors.WithMessage(err, "failed to marshal private key")
 	}
@@ -104,17 +103,17 @@ See https://github.com/bitcoin/bips/blob/master/bip-0146.mediawiki#low_s
 for more detail.
 */
 type ECDSASigner struct {
-	PrivateKey *ecdsa.PrivateKey
+	PrivateKey *sm2.PrivateKey
 }
 
-// Public returns the ecdsa.PublicKey associated with PrivateKey.
+// Public returns the sm2.PublicKey associated with PrivateKey.
 func (e *ECDSASigner) Public() crypto.PublicKey {
 	return &e.PrivateKey.PublicKey
 }
 
 // Sign signs the digest and ensures that signatures use the Low S value.
 func (e *ECDSASigner) Sign(rand io.Reader, digest []byte, opts crypto.SignerOpts) ([]byte, error) {
-	r, s, err := ecdsa.Sign(rand, e.PrivateKey, digest)
+	r, s, err := sm2.Sm2Sign(e.PrivateKey, digest, nil, rand)
 	if err != nil {
 		return nil, err
 	}
@@ -140,7 +139,7 @@ signatures to a canonical form where s is at most half the order of the curve.
 In order to make signatures compliant with what Fabric expects, toLowS creates
 signatures in this canonical form.
 */
-func toLowS(key ecdsa.PublicKey, sig ECDSASignature) ECDSASignature {
+func toLowS(key sm2.PublicKey, sig ECDSASignature) ECDSASignature {
 	// calculate half order of the curve
 	halfOrder := new(big.Int).Div(key.Curve.Params().N, big.NewInt(2))
 	// check if s is greater than half order of curve

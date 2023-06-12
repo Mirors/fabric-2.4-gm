@@ -122,7 +122,7 @@ func VerifyLedger(blockStorePath string, outputDir string) (bool, error) {
 				return false, err
 			}
 
-			// If any error is found, flag as so, and vice versa
+			// If any error is found, flag as so, and vice vesm2
 			if !checkResult.Valid {
 				ledgerErrorFound = true
 				blockResult.erroneousBlocks += 1

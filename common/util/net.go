@@ -9,9 +9,9 @@ package util
 import (
 	"context"
 	"crypto/sha256"
-	"crypto/x509"
+	"github.com/tjfoc/gmsm/x509"
 
-	"google.golang.org/grpc/credentials"
+	credentials "github.com/tjfoc/gmsm/gmtls/gmcredentials"
 	"google.golang.org/grpc/peer"
 )
 

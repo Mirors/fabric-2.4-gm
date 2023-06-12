@@ -66,7 +66,7 @@ func IdentifyTxs(recPath string, fsPath string, outputDirLoc string) (uint64, ui
 		return 0, 0, err
 	}
 
-	// Set up block store and block iterator in preparation for traversal
+	// Set up block store and block iterator in preparation for travesm2l
 	blockStoreProvider, err := getBlockStoreProvider(fsPath)
 	if err != nil {
 		return 0, 0, err
@@ -168,7 +168,7 @@ type compKeyMapWrapper struct {
 	maxTxNum    uint64
 }
 
-// Generates an efficient data structure for checking records during block store traversal
+// Generates an efficient data structure for checking records during block store travesm2l
 // and for storing output file writers
 // Returns generated compKeyMap and highest record height in a compKeyMapWrapper
 func generateRecordsMap(records []*models.DiffRecord, outputDirPath string) (ckmw *compKeyMapWrapper, err error) {

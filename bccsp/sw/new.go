@@ -10,11 +10,13 @@ import (
 	"crypto/elliptic"
 	"crypto/sha256"
 	"crypto/sha512"
+	"reflect"
+
 	"github.com/hyperledger/fabric/bccsp"
 	"github.com/hyperledger/fabric/bccsp/sw/sm2"
+	"github.com/hyperledger/fabric/bccsp/sw/sm3"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/sha3"
-	"reflect"
 )
 
 // NewDefaultSecurityLevel returns a new instance of the software-based BCCSP
@@ -81,7 +83,7 @@ func NewWithParams(securityLevel int, hashFamily string, keyStore bccsp.KeyStore
 	swbccsp.AddWrapper(reflect.TypeOf(&bccsp.SHA384Opts{}), &hasher{hash: sha512.New384})
 	swbccsp.AddWrapper(reflect.TypeOf(&bccsp.SHA3_256Opts{}), &hasher{hash: sha3.New256})
 	swbccsp.AddWrapper(reflect.TypeOf(&bccsp.SHA3_384Opts{}), &hasher{hash: sha3.New384})
-
+	swbccsp.AddWrapper(reflect.TypeOf(&bccsp.SM3Opts{}), &hasher{hash: sm3.New})
 	//hash算法不需要额外进行映射
 
 	// Set the key generators

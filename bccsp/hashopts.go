@@ -18,6 +18,13 @@ package bccsp
 
 import "fmt"
 
+// 仿照SHA256，添加国密哈希算法SM3
+type SM3Opts struct{}
+
+func (opts *SM3Opts) Algorithm() string {
+	return SM3
+}
+
 // SHA256Opts contains options relating to SHA-256.
 type SHA256Opts struct{}
 
@@ -53,6 +60,8 @@ func (opts *SHA3_384Opts) Algorithm() string {
 // GetHashOpt returns the HashOpts corresponding to the passed hash function
 func GetHashOpt(hashFunction string) (HashOpts, error) {
 	switch hashFunction {
+	case SM3:
+		return &SM3Opts{}, nil
 	case SHA256:
 		return &SHA256Opts{}, nil
 	case SHA384:

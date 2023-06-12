@@ -230,7 +230,7 @@ func (c *Cache) handleChaincodeInstalledWhileLocked(initializing bool, md *persi
 	encodedCCHash := protoutil.MarshalOrPanic(&lb.StateData{
 		Type: &lb.StateData_String_{String_: packageID},
 	})
-	hashOfCCHash := string(util.ComputeSHA256(encodedCCHash))
+	hashOfCCHash := string(util.ComputeSM3(encodedCCHash))
 	localChaincode, ok := c.localChaincodes[hashOfCCHash]
 	if !ok {
 		localChaincode = &LocalChaincode{
@@ -526,11 +526,11 @@ func (c *Cache) update(initializing bool, channelID string, dirtyChaincodes map[
 		cachedChaincode.Approved = false
 
 		cachedChaincode.Hashes = []string{
-			string(util.ComputeSHA256([]byte(MetadataKey(NamespacesName, privateName)))),
-			string(util.ComputeSHA256([]byte(FieldKey(NamespacesName, privateName, "EndorsementInfo")))),
-			string(util.ComputeSHA256([]byte(FieldKey(NamespacesName, privateName, "ValidationInfo")))),
-			string(util.ComputeSHA256([]byte(FieldKey(NamespacesName, privateName, "Collections")))),
-			string(util.ComputeSHA256([]byte(FieldKey(ChaincodeSourcesName, privateName, "PackageID")))),
+			string(util.ComputeSM3([]byte(MetadataKey(NamespacesName, privateName)))),
+			string(util.ComputeSM3([]byte(FieldKey(NamespacesName, privateName, "EndorsementInfo")))),
+			string(util.ComputeSM3([]byte(FieldKey(NamespacesName, privateName, "ValidationInfo")))),
+			string(util.ComputeSM3([]byte(FieldKey(NamespacesName, privateName, "Collections")))),
+			string(util.ComputeSM3([]byte(FieldKey(ChaincodeSourcesName, privateName, "PackageID")))),
 		}
 
 		for _, hash := range cachedChaincode.Hashes {

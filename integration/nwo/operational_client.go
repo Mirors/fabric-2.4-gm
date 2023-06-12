@@ -7,12 +7,15 @@ SPDX-License-Identifier: Apache-2.0
 package nwo
 
 import (
-	"crypto/tls"
-	"crypto/x509"
+	"context"
 	"io/ioutil"
+	"net"
 	"net/http"
 	"path/filepath"
 	"time"
+
+	tls "github.com/tjfoc/gmsm/gmtls"
+	"github.com/tjfoc/gmsm/x509"
 
 	. "github.com/onsi/gomega"
 )
@@ -45,16 +48,36 @@ func operationalClients(n *Network, tlsDir string) (authClient, unauthClient *ht
 	authenticatedClient := &http.Client{
 		Transport: &http.Transport{
 			MaxIdleConnsPerHost: -1,
-			TLSClientConfig: &tls.Config{
-				Certificates: []tls.Certificate{clientCert},
-				RootCAs:      clientCertPool,
+			DialTLSContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+				dialer := &net.Dialer{}
+
+				conn, err := tls.DialWithDialer(dialer, network, addr, &tls.Config{
+					Certificates: []tls.Certificate{clientCert},
+					RootCAs:      clientCertPool,
+				})
+				if err != nil {
+					return nil, err
+				}
+
+				return conn, nil
 			},
 		},
 	}
 	unauthenticatedClient := &http.Client{
 		Transport: &http.Transport{
 			MaxIdleConnsPerHost: -1,
-			TLSClientConfig:     &tls.Config{RootCAs: clientCertPool},
+			DialTLSContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+				dialer := &net.Dialer{}
+
+				conn, err := tls.DialWithDialer(dialer, network, addr, &tls.Config{
+					RootCAs: clientCertPool,
+				})
+				if err != nil {
+					return nil, err
+				}
+
+				return conn, nil
+			},
 		},
 	}
 

@@ -7,13 +7,13 @@ package ca
 
 import (
 	"crypto"
-	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
 	"crypto/sha256"
-	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
+	"github.com/tjfoc/gmsm/sm2"
+	"github.com/tjfoc/gmsm/x509"
 	"math/big"
 	"net"
 	"os"
@@ -116,7 +116,7 @@ func (ca *CA) SignCertificate(
 	name string,
 	orgUnits,
 	alternateNames []string,
-	pub *ecdsa.PublicKey,
+	pub *sm2.PublicKey,
 	ku x509.KeyUsage,
 	eku []x509.ExtKeyUsage,
 ) (*x509.Certificate, error) {
@@ -164,7 +164,7 @@ func (ca *CA) SignCertificate(
 }
 
 // compute Subject Key Identifier using RFC 7093, Section 2, Method 4
-func computeSKI(privKey *ecdsa.PrivateKey) []byte {
+func computeSKI(privKey *sm2.PrivateKey) []byte {
 	// Marshall the public key
 	raw := elliptic.Marshal(privKey.Curve, privKey.PublicKey.X, privKey.PublicKey.Y)
 
@@ -241,11 +241,11 @@ func genCertificateECDSA(
 	name string,
 	template,
 	parent *x509.Certificate,
-	pub *ecdsa.PublicKey,
-	priv interface{},
+	pub *sm2.PublicKey,
+	priv crypto.Signer,
 ) (*x509.Certificate, error) {
 	// create the x509 public cert
-	certBytes, err := x509.CreateCertificate(rand.Reader, template, parent, pub, priv)
+	certBytes, err := x509.CreateCertificate(template, parent, pub, priv)
 	if err != nil {
 		return nil, err
 	}
@@ -270,7 +270,7 @@ func genCertificateECDSA(
 	return x509Cert, nil
 }
 
-// LoadCertificateECDSA load a ecdsa cert from a file in cert path
+// LoadCertificateECDSA load a sm2 cert from a file in cert path
 func LoadCertificateECDSA(certPath string) (*x509.Certificate, error) {
 	var cert *x509.Certificate
 	var err error

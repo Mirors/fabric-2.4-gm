@@ -8,9 +8,9 @@ package protoutil
 
 import (
 	"bytes"
-	"crypto/x509"
 	"encoding/pem"
 	"fmt"
+	"github.com/tjfoc/gmsm/x509"
 	"strings"
 
 	"github.com/golang/protobuf/proto"

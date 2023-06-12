@@ -9,8 +9,8 @@ package cluster
 import (
 	"bytes"
 	"context"
-	"crypto/x509"
 	"encoding/pem"
+	"github.com/tjfoc/gmsm/x509"
 	"sync"
 	"sync/atomic"
 	"time"

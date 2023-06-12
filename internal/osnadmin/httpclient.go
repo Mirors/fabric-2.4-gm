@@ -7,17 +7,29 @@ SPDX-License-Identifier: Apache-2.0
 package osnadmin
 
 import (
-	"crypto/tls"
-	"crypto/x509"
+	"context"
+	"net"
 	"net/http"
+
+	tls "github.com/tjfoc/gmsm/gmtls"
+	"github.com/tjfoc/gmsm/x509"
 )
 
 func httpClient(caCertPool *x509.CertPool, tlsClientCert tls.Certificate) *http.Client {
 	return &http.Client{
 		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				RootCAs:      caCertPool,
-				Certificates: []tls.Certificate{tlsClientCert},
+			DialTLSContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+				dialer := &net.Dialer{}
+
+				conn, err := tls.DialWithDialer(dialer, network, addr, &tls.Config{
+					Certificates: []tls.Certificate{tlsClientCert},
+					RootCAs:      caCertPool,
+				})
+				if err != nil {
+					return nil, err
+				}
+
+				return conn, nil
 			},
 		},
 	}

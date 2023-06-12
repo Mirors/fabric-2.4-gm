@@ -38,7 +38,7 @@ func NewClient(conf Config) (*Client, error) {
 		SecOpts:     sop,
 		DialTimeout: conf.Timeout,
 	}
-	return &Client{config: cc, TLSCertHash: util.ComputeSHA256(sop.Certificate)}, nil
+	return &Client{config: cc, TLSCertHash: util.ComputeSM3(sop.Certificate)}, nil
 }
 
 // NewDialer creates a new dialer from the given endpoint

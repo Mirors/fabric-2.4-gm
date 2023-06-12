@@ -8,11 +8,11 @@ package signer
 
 import (
 	"crypto"
-	"crypto/ecdsa"
 	"crypto/rand"
-	"crypto/x509"
 	"encoding/asn1"
 	"encoding/pem"
+	"github.com/tjfoc/gmsm/sm2"
+	"github.com/tjfoc/gmsm/x509"
 	"math/big"
 	"os"
 	"strings"
@@ -37,7 +37,7 @@ type Config struct {
 // initialize an MSP without a CA cert that signs the signing identity,
 // this will do for now.
 type Signer struct {
-	key     *ecdsa.PrivateKey
+	key     *sm2.PrivateKey
 	Creator []byte
 }
 
@@ -93,11 +93,11 @@ func validateEnrollmentCertificate(b []byte) error {
 }
 
 func (si *Signer) Sign(msg []byte) ([]byte, error) {
-	digest := util.ComputeSHA256(msg)
-	return signECDSA(si.key, digest)
+	digest := util.ComputeSM3(msg)
+	return signSM2(si.key, digest)
 }
 
-func loadPrivateKey(file string) (*ecdsa.PrivateKey, error) {
+func loadPrivateKey(file string) (*sm2.PrivateKey, error) {
 	b, err := os.ReadFile(file)
 	if err != nil {
 		return nil, errors.WithStack(err)
@@ -110,24 +110,24 @@ func loadPrivateKey(file string) (*ecdsa.PrivateKey, error) {
 	if err != nil {
 		return nil, err
 	}
-	return key.(*ecdsa.PrivateKey), nil
+	return key.(*sm2.PrivateKey), nil
 }
 
 // Based on crypto/tls/tls.go but modified for Fabric:
 func parsePrivateKey(der []byte) (crypto.PrivateKey, error) {
 	// OpenSSL 1.0.0 generates PKCS#8 keys.
-	if key, err := x509.ParsePKCS8PrivateKey(der); err == nil {
-		switch key := key.(type) {
-		// Fabric only supports ECDSA at the moment.
-		case *ecdsa.PrivateKey:
-			return key, nil
-		default:
-			return nil, errors.Errorf("found unknown private key type (%T) in PKCS#8 wrapping", key)
-		}
-	}
+	// if key, err := x509.ParsePKCS8PrivateKey(der); err == nil {
+	// 	switch key := key.(type) {
+	// 	// Fabric only supports ECDSA at the moment.
+	// 	case *sm2.PrivateKey:
+	// 		return key, nil
+	// 	default:
+	// 		return nil, errors.Errorf("found unknown private key type (%T) in PKCS#8 wrapping", key)
+	// 	}
+	// }
 
-	// OpenSSL ecparam generates SEC1 EC private keys for ECDSA.
-	key, err := x509.ParseECPrivateKey(der)
+	// OpenSSL ecparam generates SEC1 EC private keys for SM2.
+	key, err := x509.ParseSm2PrivateKey(der)
 	if err != nil {
 		return nil, errors.Errorf("failed to parse private key: %v", err)
 	}
@@ -135,13 +135,13 @@ func parsePrivateKey(der []byte) (crypto.PrivateKey, error) {
 	return key, nil
 }
 
-func signECDSA(k *ecdsa.PrivateKey, digest []byte) (signature []byte, err error) {
-	r, s, err := ecdsa.Sign(rand.Reader, k, digest)
+func signSM2(k *sm2.PrivateKey, digest []byte) (signature []byte, err error) {
+	r, s, err := sm2.Sm2Sign(k, digest, nil, rand.Reader)
 	if err != nil {
 		return nil, err
 	}
 
-	s, err = utils.ToLowS(&k.PublicKey, s)
+	s, err = utils.GMToLowS(&k.PublicKey, s)
 	if err != nil {
 		return nil, err
 	}

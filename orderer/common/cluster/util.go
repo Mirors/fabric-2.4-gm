@@ -9,10 +9,7 @@ package cluster
 import (
 	"bytes"
 	"context"
-	"crypto/ecdsa"
 	"crypto/sha256"
-	"crypto/tls"
-	"crypto/x509"
 	"encoding/hex"
 	"encoding/json"
 	"encoding/pem"
@@ -22,6 +19,10 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/tjfoc/gmsm/gmtls"
+	"github.com/tjfoc/gmsm/sm2"
+	"github.com/tjfoc/gmsm/x509"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/hyperledger/fabric-config/protolator"
@@ -36,8 +37,8 @@ import (
 	"github.com/hyperledger/fabric/internal/pkg/comm"
 	"github.com/hyperledger/fabric/protoutil"
 	"github.com/pkg/errors"
+	credentials "github.com/tjfoc/gmsm/gmtls/gmcredentials"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/peer"
 )
 
@@ -801,7 +802,7 @@ func requestAsString(request *orderer.StepRequest) string {
 	}
 }
 
-func exportKM(cs tls.ConnectionState, label string, context []byte) ([]byte, error) {
+func exportKM(cs gmtls.ConnectionState, label string, context []byte) ([]byte, error) {
 	tlsBinding, err := cs.ExportKeyingMaterial(label, context, 32)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed generating TLS Binding material")
@@ -810,7 +811,7 @@ func exportKM(cs tls.ConnectionState, label string, context []byte) ([]byte, err
 }
 
 func GetSessionBindingHash(authReq *orderer.NodeAuthRequest) []byte {
-	return util.ComputeSHA256(util.ConcatenateBytes(
+	return util.ComputeSM3(util.ConcatenateBytes(
 		[]byte(strconv.FormatUint(uint64(authReq.Version), 10)),
 		[]byte(authReq.Timestamp.String()),
 		[]byte(strconv.FormatUint(authReq.FromId, 10)),
@@ -845,12 +846,12 @@ func VerifySignature(identity, msgHash, signature []byte) error {
 		return errors.Wrap(err, "key extraction failed")
 	}
 
-	pubKey, isECDSA := cert.PublicKey.(*ecdsa.PublicKey)
+	pubKey, isECDSA := cert.PublicKey.(*sm2.PublicKey)
 	if !isECDSA {
 		return errors.New("not valid public key")
 	}
 
-	validSignature := ecdsa.VerifyASN1(pubKey, msgHash, signature)
+	validSignature := pubKey.Verify(msgHash, signature)
 
 	if !validSignature {
 		return errors.New("signature invalid")

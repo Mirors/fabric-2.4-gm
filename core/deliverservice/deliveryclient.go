@@ -152,7 +152,7 @@ func (d *deliverServiceImpl) StartDeliverForChannel(chainID string, ledgerInfo b
 		if err != nil {
 			return fmt.Errorf("failed to access client TLS configuration: %w", err)
 		}
-		dc.TLSCertHash = util.ComputeSHA256(cert.Certificate[0])
+		dc.TLSCertHash = util.ComputeSM3(cert.Certificate[0])
 	}
 
 	d.blockProviders[chainID] = dc

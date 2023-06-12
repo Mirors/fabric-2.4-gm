@@ -233,9 +233,9 @@ func (msp *bccspmsp) getSigningIdentityFromConf(sidInfo *m.SigningIdentityInfo) 
 		if pemKey == nil {
 			return nil, errors.Errorf("%s: wrong PEM encoding", sidInfo.PrivateSigner.KeyIdentifier)
 		}
-		privKey, err = msp.bccsp.KeyImport(pemKey.Bytes, &bccsp.ECDSAPrivateKeyImportOpts{Temporary: true})
+		privKey, err = msp.bccsp.KeyImport(pemKey.Bytes, &bccsp.GMSM2PrivateKeyImportOpts{Temporary: true})
 		if err != nil {
-			return nil, errors.WithMessage(err, "getIdentityFromBytes error: Failed to import EC private key")
+			return nil, errors.WithMessage(err, "getIdentityFromBytes error: Failed to import SM2 private key")
 		}
 	}
 
@@ -416,7 +416,7 @@ func (msp *bccspmsp) deserializeIdentityInternal(serializedIdentity []byte) (Ide
 	// We can't do it yet because there is no standardized way
 	// (yet) to encode the MSP ID into the x.509 body of a cert
 
-	pub, err := msp.bccsp.KeyImport(cert, &bccsp.GMSM2PublicKeyImportOpts{Temporary: true})
+	pub, err := msp.bccsp.KeyImport(cert, &bccsp.X509PublicKeyImportOpts{Temporary: true})
 	if err != nil {
 		return nil, errors.WithMessage(err, "failed to import certificate's public key")
 	}
@@ -966,12 +966,12 @@ func (msp *bccspmsp) IsWellFormed(identity *m.SerializedIdentity) error {
 }
 
 func isIdentitySignedInCanonicalForm(sig []byte, mspID string, pemEncodedIdentity []byte) error {
-	r, s, err := utils.UnmarshalECDSASignature(sig)
+	r, s, err := utils.UnmarshalSM2Signature(sig)
 	if err != nil {
 		return err
 	}
 
-	expectedSig, err := utils.MarshalECDSASignature(r, s)
+	expectedSig, err := utils.MarshalSM2Signature(r, s)
 	if err != nil {
 		return err
 	}

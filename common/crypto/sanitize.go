@@ -7,11 +7,11 @@ SPDX-License-Identifier: Apache-2.0
 package crypto
 
 import (
-	"crypto/ecdsa"
-	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/asn1"
 	"encoding/pem"
+	"github.com/tjfoc/gmsm/sm2"
+	"github.com/tjfoc/gmsm/x509"
 	"math/big"
 	"time"
 
@@ -48,13 +48,13 @@ func SanitizeX509Cert(initialPEM []byte) ([]byte, error) {
 		return nil, errors.Wrapf(err, "failed parsing certificate %s", string(initialPEM))
 	}
 
-	r, s, err := utils.UnmarshalECDSASignature(cert.Signature)
+	r, s, err := utils.UnmarshalSM2Signature(cert.Signature)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed unmarshaling ECDSA signature on identity: %s", string(initialPEM))
+		return nil, errors.Wrapf(err, "failed unmarshaling SM2 signature on identity: %s", string(initialPEM))
 	}
 
 	// We assume that the consenter and the CA use the same signature scheme.
-	curveOrderUsedByCryptoGen := cert.PublicKey.(*ecdsa.PublicKey).Curve.Params().N
+	curveOrderUsedByCryptoGen := cert.PublicKey.(*sm2.PublicKey).Curve.Params().N
 	halfOrder := new(big.Int).Rsh(curveOrderUsedByCryptoGen, 1)
 	// Low S, nothing to do here!
 	if s.Cmp(halfOrder) != 1 {
@@ -69,9 +69,9 @@ func SanitizeX509Cert(initialPEM []byte) ([]byte, error) {
 		return nil, errors.Wrapf(err, "failed unmarshaling certificate")
 	}
 
-	newSig, err := utils.MarshalECDSASignature(r, s)
+	newSig, err := utils.MarshalSM2Signature(r, s)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed marshaling ECDSA signature")
+		return nil, errors.Wrapf(err, "failed marshaling SM2 signature")
 	}
 	newCert.SignatureValue = asn1.BitString{Bytes: newSig, BitLength: len(newSig) * 8}
 

@@ -23,9 +23,10 @@ import (
 	"encoding/asn1"
 	"encoding/pem"
 	"fmt"
-	"github.com/tjfoc/gmsm/x509"
 	"math/big"
 	"time"
+
+	"github.com/tjfoc/gmsm/x509"
 
 	"github.com/hyperledger/fabric/bccsp/utils"
 	"github.com/pkg/errors"

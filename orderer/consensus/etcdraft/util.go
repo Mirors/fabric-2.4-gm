@@ -7,8 +7,8 @@ SPDX-License-Identifier: Apache-2.0
 package etcdraft
 
 import (
-	"crypto/x509"
 	"encoding/pem"
+	"github.com/tjfoc/gmsm/x509"
 	"time"
 
 	"github.com/golang/protobuf/proto"

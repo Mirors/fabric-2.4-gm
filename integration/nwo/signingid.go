@@ -7,12 +7,12 @@ SPDX-License-Identifier: Apache-2.0
 package nwo
 
 import (
-	"crypto/ecdsa"
 	"crypto/rand"
 	"crypto/sha256"
-	"crypto/x509"
 	"encoding/pem"
 	"fmt"
+	"github.com/tjfoc/gmsm/sm2"
+	"github.com/tjfoc/gmsm/x509"
 	"io/ioutil"
 
 	"github.com/golang/protobuf/proto"
@@ -51,21 +51,21 @@ func (s *SigningIdentity) Sign(msg []byte) ([]byte, error) {
 	if block.Type != "EC PRIVATE KEY" && block.Type != "PRIVATE KEY" {
 		return nil, fmt.Errorf("file %s does not contain a private key", s.KeyPath)
 	}
-	key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+	key, err := x509.ParsePKCS8PrivateKey(block.Bytes, nil)
 	if err != nil {
 		return nil, err
 	}
-	eckey, ok := key.(*ecdsa.PrivateKey)
-	if !ok {
-		return nil, fmt.Errorf("unexpected key type: %T", key)
-	}
-	r, _s, err := ecdsa.Sign(rand.Reader, eckey, digest[:])
+	// eckey, ok := key.(*sm2.PrivateKey)
+	// if !ok {
+	// 	return nil, fmt.Errorf("unexpected key type: %T", key)
+	// }
+	r, _s, err := sm2.Sm2Sign(key, digest[:], nil, rand.Reader)
 	if err != nil {
 		return nil, err
 	}
-	sig, err := utils.MarshalECDSASignature(r, _s)
+	sig, err := utils.MarshalSM2Signature(r, _s)
 	if err != nil {
 		return nil, err
 	}
-	return utils.SignatureToLowS(&eckey.PublicKey, sig)
+	return utils.GMSignatureToLowS(&key.PublicKey, sig)
 }

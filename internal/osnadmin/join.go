@@ -8,9 +8,9 @@ package osnadmin
 
 import (
 	"bytes"
-	"crypto/tls"
-	"crypto/x509"
 	"fmt"
+	tls "github.com/tjfoc/gmsm/gmtls"
+	"github.com/tjfoc/gmsm/x509"
 	"mime/multipart"
 	"net/http"
 )

@@ -9,9 +9,9 @@ package comm
 import (
 	"bytes"
 	"context"
-	"crypto/tls"
 	"encoding/hex"
 	"fmt"
+	tls "github.com/tjfoc/gmsm/gmtls"
 	"reflect"
 	"sync"
 	"sync/atomic"

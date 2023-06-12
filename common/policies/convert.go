@@ -24,7 +24,7 @@ func remap(sp *cb.SignaturePolicy, idRemap map[int]int) *cb.SignaturePolicy {
 		rules := []*cb.SignaturePolicy{}
 		for _, rule := range t.NOutOf.Rules {
 			// here we call remap again - we're doing a
-			// depth-first traversal of this policy tree
+			// depth-first travesm2l of this policy tree
 			rules = append(rules, remap(rule, idRemap))
 		}
 

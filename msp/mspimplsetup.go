@@ -85,7 +85,7 @@ func (msp *bccspmsp) setupCrypto(conf *m.FabricMSPConfig) error {
 		// Move to defaults
 		msp.cryptoConfig = &m.FabricCryptoConfig{
 			SignatureHashFamily:            bccsp.SHA2,
-			IdentityIdentifierHashFunction: bccsp.SHA256,
+			IdentityIdentifierHashFunction: bccsp.SM3,
 		}
 		mspLogger.Debugf("CryptoConfig was nil. Move to defaults.")
 	}
@@ -94,7 +94,7 @@ func (msp *bccspmsp) setupCrypto(conf *m.FabricMSPConfig) error {
 		mspLogger.Debugf("CryptoConfig.SignatureHashFamily was nil. Move to defaults.")
 	}
 	if msp.cryptoConfig.IdentityIdentifierHashFunction == "" {
-		msp.cryptoConfig.IdentityIdentifierHashFunction = bccsp.SHA256
+		msp.cryptoConfig.IdentityIdentifierHashFunction = bccsp.SM3
 		mspLogger.Debugf("CryptoConfig.IdentityIdentifierHashFunction was nil. Move to defaults.")
 	}
 
@@ -198,13 +198,13 @@ func (msp *bccspmsp) setupAdminsV142(conf *m.FabricMSPConfig) error {
 func isECDSASignatureAlgorithm(algid asn1.ObjectIdentifier) bool {
 	// This is the set of ECDSA algorithms supported by Go 1.14 for CRL
 	// signatures.
-	ecdsaSignaureAlgorithms := []asn1.ObjectIdentifier{
+	sm2SignaureAlgorithms := []asn1.ObjectIdentifier{
 		{1, 2, 840, 10045, 4, 1},    // oidSignatureECDSAWithSHA1
 		{1, 2, 840, 10045, 4, 3, 2}, // oidSignatureECDSAWithSHA256
 		{1, 2, 840, 10045, 4, 3, 3}, // oidSignatureECDSAWithSHA384
 		{1, 2, 840, 10045, 4, 3, 4}, // oidSignatureECDSAWithSHA512
 	}
-	for _, id := range ecdsaSignaureAlgorithms {
+	for _, id := range sm2SignaureAlgorithms {
 		if id.Equal(algid) {
 			return true
 		}
@@ -221,13 +221,13 @@ func (msp *bccspmsp) setupCRLs(conf *m.FabricMSPConfig) error {
 			return errors.Wrap(err, "could not parse RevocationList")
 		}
 
-		// Massage the ECDSA signature values
+		// Massage the SM2 signature values
 		if isECDSASignatureAlgorithm(crl.SignatureAlgorithm.Algorithm) {
-			r, s, err := utils.UnmarshalECDSASignature(crl.SignatureValue.RightAlign())
+			r, s, err := utils.UnmarshalSM2Signature(crl.SignatureValue.RightAlign())
 			if err != nil {
 				return err
 			}
-			sig, err := utils.MarshalECDSASignature(r, s)
+			sig, err := utils.MarshalSM2Signature(r, s)
 			if err != nil {
 				return err
 			}

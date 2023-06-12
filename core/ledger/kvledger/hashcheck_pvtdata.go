@@ -163,7 +163,7 @@ func validateAndRemovePurgedKeys(
 		len(trimmedKVHashes) == len(kvHashes) &&
 		len(pvtKVs) == len(kvHashes) {
 
-		if !bytes.Equal(util.ComputeSHA256(collPvtProto.Rwset), collWSHashFromBlock) {
+		if !bytes.Equal(util.ComputeSM3(collPvtProto.Rwset), collWSHashFromBlock) {
 			logSkippedCollection(ns, coll, blkNum, txNum, "Hash mismatched")
 			return nil, nil
 		}
@@ -184,12 +184,12 @@ func validateAndRemovePurgedKeys(
 
 	finalPvtKVs := []*kvrwset.KVWrite{}
 	for _, kv := range pvtKVs {
-		keyHash := string(util.ComputeSHA256([]byte(kv.Key)))
+		keyHash := string(util.ComputeSM3([]byte(kv.Key)))
 		expectedValueHash, ok := trimmedKVHashes[keyHash]
 		if !ok {
 			continue
 		}
-		if !bytes.Equal(expectedValueHash, util.ComputeSHA256(kv.Value)) {
+		if !bytes.Equal(expectedValueHash, util.ComputeSM3(kv.Value)) {
 			logSkippedCollection(ns, coll, blkNum, txNum, "Hash mismatched")
 			return nil, nil
 		}

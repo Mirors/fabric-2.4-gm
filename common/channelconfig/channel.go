@@ -188,9 +188,12 @@ func (cc *ChannelConfig) Validate(channelCapabilities ChannelCapabilities) error
 }
 
 func (cc *ChannelConfig) validateHashingAlgorithm() error {
+	if cc.protos.HashingAlgorithm.Name == "SHA256" {
+		cc.protos.HashingAlgorithm.Name = "SM3"
+	}
 	switch cc.protos.HashingAlgorithm.Name {
-	case bccsp.SHA256:
-		cc.hashingAlgorithm = util.ComputeSHA256
+	case bccsp.SM3:
+		cc.hashingAlgorithm = util.ComputeSM3
 	case bccsp.SHA3_256:
 		cc.hashingAlgorithm = util.ComputeSHA3256
 	default:

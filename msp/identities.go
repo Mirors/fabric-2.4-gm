@@ -219,7 +219,7 @@ func (id *identity) Serialize() ([]byte, error) {
 func (id *identity) getHashOpt(hashFamily string) (bccsp.HashOpts, error) {
 	switch hashFamily {
 	case bccsp.SHA2:
-		return bccsp.GetHashOpt(bccsp.SHA256)
+		return bccsp.GetHashOpt(bccsp.SM3)
 	case bccsp.SHA3:
 		return bccsp.GetHashOpt(bccsp.SHA3_256)
 	}

@@ -8,10 +8,10 @@ package main
 
 import (
 	"bytes"
-	"crypto/tls"
-	"crypto/x509"
 	"encoding/json"
 	"fmt"
+	tls "github.com/tjfoc/gmsm/gmtls"
+	"github.com/tjfoc/gmsm/x509"
 	"io"
 	"net/http"
 	"os"
@@ -113,7 +113,6 @@ func executeForArgs(args []string) (output string, exit int, err error) {
 	switch command {
 	case join.FullCommand():
 		//使用localhost:7050时报错
-		//此处执行结束已经出现error
 		resp, err = osnadmin.Join(osnURL, marshaledConfigBlock, caCertPool, tlsClientCert)
 	case list.FullCommand():
 		if *listChannelID != "" {
@@ -124,7 +123,6 @@ func executeForArgs(args []string) (output string, exit int, err error) {
 	case remove.FullCommand():
 		resp, err = osnadmin.Remove(osnURL, *removeChannelID, caCertPool, tlsClientCert)
 	}
-
 	if err != nil {
 		return errorOutput(err), 1, nil
 	}

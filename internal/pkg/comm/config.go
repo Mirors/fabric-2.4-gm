@@ -8,8 +8,8 @@ package comm
 
 import (
 	"context"
-	"crypto/tls"
-	"crypto/x509"
+	tls "github.com/tjfoc/gmsm/gmtls"
+	"github.com/tjfoc/gmsm/x509"
 	"time"
 
 	"github.com/hyperledger/fabric/common/flogging"
@@ -44,6 +44,8 @@ var (
 		tls.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
 		tls.TLS_RSA_WITH_AES_128_GCM_SHA256,
 		tls.TLS_RSA_WITH_AES_256_GCM_SHA384,
+		tls.GMTLS_ECDHE_SM2_WITH_SM4_SM3,
+		tls.GMTLS_SM2_WITH_SM4_SM3,
 	}
 	// default connection timeout
 	DefaultConnectionTimeout = 5 * time.Second

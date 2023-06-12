@@ -103,7 +103,7 @@ type Deliverer struct {
 	MaxRetryDuration    time.Duration
 
 	// TLSCertHash should be nil when TLS is not enabled
-	TLSCertHash []byte // util.ComputeSHA256(b.credSupport.GetClientCertificate().Certificate[0])
+	TLSCertHash []byte // util.ComputeSM3(b.credSupport.GetClientCertificate().Certificate[0])
 
 	sleeper sleeper
 }

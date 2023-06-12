@@ -296,7 +296,7 @@ func (pdp *PvtdataProvider) populateFromCache(pvtdata rwsetByKeys, pvtdataRetrie
 					continue
 				}
 
-				if bytes.Equal(pvtdataRetrievalInfo.expectedHashes[key], commonutil.ComputeSHA256(col.Rwset)) {
+				if bytes.Equal(pvtdataRetrievalInfo.expectedHashes[key], commonutil.ComputeSM3(col.Rwset)) {
 					// populate the pvtdata with the RW set from the cache
 					pvtdata[key] = col.Rwset
 				} else {
@@ -361,7 +361,7 @@ func (pdp *PvtdataProvider) populateFromTransientStore(pvtdata rwsetByKeys, pvtd
 						continue
 					}
 
-					if !bytes.Equal(pvtdataRetrievalInfo.expectedHashes[key], commonutil.ComputeSHA256(col.Rwset)) {
+					if !bytes.Equal(pvtdataRetrievalInfo.expectedHashes[key], commonutil.ComputeSM3(col.Rwset)) {
 						continue
 					}
 					// populate the pvtdata with the RW set from the transient store
@@ -428,7 +428,7 @@ func (pdp *PvtdataProvider) populateFromRemotePeers(pvtdata rwsetByKeys, pvtdata
 				continue
 			}
 
-			if bytes.Equal(pvtdataRetrievalInfo.expectedHashes[key], commonutil.ComputeSHA256(rws)) {
+			if bytes.Equal(pvtdataRetrievalInfo.expectedHashes[key], commonutil.ComputeSM3(rws)) {
 				// populate the pvtdata with the RW set from the remote peer
 				pvtdata[key] = rws
 			} else {

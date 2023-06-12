@@ -506,7 +506,7 @@ func createClientAndService(t *testing.T, testdir string) (*client, *client, *se
 	userSigner := createUserSigner(t)
 	wrapperUserClient := &client{AuthInfo: &discovery_protos.AuthInfo{
 		ClientIdentity:    userSigner.Creator,
-		ClientTlsCertHash: util.ComputeSHA256(clientKeyPair.TLSCert.Raw),
+		ClientTlsCertHash: util.ComputeSM3(clientKeyPair.TLSCert.Raw),
 	}, conn: conn}
 	var signerCacheSize uint = 10
 	wrapperUserClient.Client = disc.NewClient(wrapperUserClient.newConnection, userSigner.Sign, signerCacheSize)
@@ -514,7 +514,7 @@ func createClientAndService(t *testing.T, testdir string) (*client, *client, *se
 	adminSigner := createAdminSigner(t)
 	wrapperAdminClient := &client{AuthInfo: &discovery_protos.AuthInfo{
 		ClientIdentity:    adminSigner.Creator,
-		ClientTlsCertHash: util.ComputeSHA256(clientKeyPair.TLSCert.Raw),
+		ClientTlsCertHash: util.ComputeSM3(clientKeyPair.TLSCert.Raw),
 	}, conn: conn}
 	wrapperAdminClient.Client = disc.NewClient(wrapperAdminClient.newConnection, adminSigner.Sign, signerCacheSize)
 
@@ -780,7 +780,7 @@ func (ps testPeerSet) Contains(peer *testPeer) bool {
 func peersToTestPeers(peers []*disc.Peer) testPeerSet {
 	var res testPeerSet
 	for _, p := range peers {
-		pkiID := gcommon.PKIidType(hex.EncodeToString(util.ComputeSHA256(p.Identity)))
+		pkiID := gcommon.PKIidType(hex.EncodeToString(util.ComputeSM3(p.Identity)))
 		var stateInfoMember gdisc.NetworkMember
 		if p.StateInfoMessage != nil {
 			stateInfo, _ := protoext.EnvelopeToGossipMessage(p.StateInfoMessage.Envelope)
@@ -819,7 +819,7 @@ func newPeer(dir, mspID string, org, id int) *testPeer {
 		IdBytes: certBytes,
 	}
 	identityBytes := protoutil.MarshalOrPanic(sID)
-	pkiID := gcommon.PKIidType(hex.EncodeToString(util.ComputeSHA256(identityBytes)))
+	pkiID := gcommon.PKIidType(hex.EncodeToString(util.ComputeSM3(identityBytes)))
 	return &testPeer{
 		mspID:        mspID,
 		identity:     identityBytes,
@@ -954,7 +954,7 @@ func serializeIdentity(clientCert string, mspID string) ([]byte, error) {
 }
 
 func (si *signer) Sign(msg []byte) ([]byte, error) {
-	digest := util.ComputeSHA256(msg)
+	digest := util.ComputeSM3(msg)
 	return signECDSA(si.key, digest)
 }
 

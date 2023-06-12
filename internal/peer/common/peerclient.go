@@ -8,7 +8,7 @@ package common
 
 import (
 	"context"
-	"crypto/tls"
+	tls "github.com/tjfoc/gmsm/gmtls"
 	"io/ioutil"
 	"time"
 

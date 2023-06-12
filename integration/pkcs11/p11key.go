@@ -8,9 +8,9 @@ package pkcs11
 
 import (
 	"crypto"
-	"crypto/ecdsa"
 	"encoding/asn1"
 	"fmt"
+	"github.com/tjfoc/gmsm/sm2"
 	"io"
 	"math/big"
 
@@ -21,7 +21,7 @@ import (
 type P11ECDSAKey struct {
 	ctx              *pkcs11.Ctx
 	session          pkcs11.SessionHandle
-	publicKey        *ecdsa.PublicKey
+	publicKey        *sm2.PublicKey
 	privateKeyHandle pkcs11.ObjectHandle
 }
 

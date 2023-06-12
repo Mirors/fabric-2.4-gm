@@ -7,8 +7,8 @@ SPDX-License-Identifier: Apache-2.0
 package fabhttp
 
 import (
-	"crypto/tls"
-	"crypto/x509"
+	tls "github.com/tjfoc/gmsm/gmtls"
+	"github.com/tjfoc/gmsm/x509"
 	"io/ioutil"
 
 	"github.com/hyperledger/fabric/internal/pkg/comm"

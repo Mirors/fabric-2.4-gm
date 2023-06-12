@@ -7,9 +7,9 @@ SPDX-License-Identifier: Apache-2.0
 package osnadmin
 
 import (
-	"crypto/tls"
-	"crypto/x509"
 	"fmt"
+	tls "github.com/tjfoc/gmsm/gmtls"
+	"github.com/tjfoc/gmsm/x509"
 	"net/http"
 )
 

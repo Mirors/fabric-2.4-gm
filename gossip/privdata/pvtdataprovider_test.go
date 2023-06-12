@@ -78,7 +78,7 @@ func TestRetrievePvtdata(t *testing.T) {
 
 	ts := testSupport{
 		preHash:            []byte("rws-pre-image"),
-		hash:               util2.ComputeSHA256([]byte("rws-pre-image")),
+		hash:               util2.ComputeSM3([]byte("rws-pre-image")),
 		channelID:          "testchannelid",
 		blockNum:           uint64(1),
 		endorsers:          []string{identity.GetMSPIdentifier()},
@@ -851,7 +851,7 @@ func TestRetrievePvtdataFailure(t *testing.T) {
 
 	ts := testSupport{
 		preHash:            []byte("rws-pre-image"),
-		hash:               util2.ComputeSHA256([]byte("rws-pre-image")),
+		hash:               util2.ComputeSM3([]byte("rws-pre-image")),
 		channelID:          "testchannelid",
 		blockNum:           uint64(1),
 		endorsers:          []string{identity.GetMSPIdentifier()},
@@ -911,7 +911,7 @@ func TestRetryFetchFromPeer(t *testing.T) {
 
 	ts := testSupport{
 		preHash:            []byte("rws-pre-image"),
-		hash:               util2.ComputeSHA256([]byte("rws-pre-image")),
+		hash:               util2.ComputeSM3([]byte("rws-pre-image")),
 		channelID:          "testchannelid",
 		blockNum:           uint64(1),
 		endorsers:          []string{identity.GetMSPIdentifier()},
@@ -1004,7 +1004,7 @@ func TestSkipPullingAllInvalidTransactions(t *testing.T) {
 
 	ts := testSupport{
 		preHash:            []byte("rws-pre-image"),
-		hash:               util2.ComputeSHA256([]byte("rws-pre-image")),
+		hash:               util2.ComputeSM3([]byte("rws-pre-image")),
 		channelID:          "testchannelid",
 		blockNum:           uint64(1),
 		endorsers:          []string{identity.GetMSPIdentifier()},
@@ -1104,7 +1104,7 @@ func TestRetrievedPvtdataPurgeBelowHeight(t *testing.T) {
 
 	ts := testSupport{
 		preHash:            []byte("rws-pre-image"),
-		hash:               util2.ComputeSHA256([]byte("rws-pre-image")),
+		hash:               util2.ComputeSM3([]byte("rws-pre-image")),
 		channelID:          "testchannelid",
 		blockNum:           uint64(9),
 		endorsers:          []string{identity.GetMSPIdentifier()},

@@ -8,7 +8,7 @@ package fabhttp
 
 import (
 	"context"
-	"crypto/tls"
+	tls "github.com/tjfoc/gmsm/gmtls"
 	"net"
 	"net/http"
 	"os"

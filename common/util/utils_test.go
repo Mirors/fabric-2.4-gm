@@ -22,11 +22,11 @@ import (
 	"time"
 )
 
-func TestComputeSHA256(t *testing.T) {
-	if !bytes.Equal(ComputeSHA256([]byte("foobar")), ComputeSHA256([]byte("foobar"))) {
+func TestComputeSM3(t *testing.T) {
+	if !bytes.Equal(ComputeSM3([]byte("foobar")), ComputeSM3([]byte("foobar"))) {
 		t.Fatalf("Expected hashes to match, but they did not match")
 	}
-	if bytes.Equal(ComputeSHA256([]byte("foobar1")), ComputeSHA256([]byte("foobar2"))) {
+	if bytes.Equal(ComputeSM3([]byte("foobar1")), ComputeSM3([]byte("foobar2"))) {
 		t.Fatalf("Expected hashes to be different, but they match")
 	}
 }

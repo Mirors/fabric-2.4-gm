@@ -11,10 +11,10 @@ import (
 	"strings"
 	"time"
 
+	credentials "github.com/tjfoc/gmsm/gmtls/gmcredentials"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/peer"
 	"google.golang.org/grpc/status"
 )

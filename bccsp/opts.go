@@ -56,6 +56,8 @@ const (
 	SHA3_256 = "SHA3_256"
 	// SHA3_384
 	SHA3_384 = "SHA3_384"
+	// SM3
+	SM3 = "SM3"
 
 	// X509Certificate Label for X509 certificate related operation
 	X509Certificate = "X509Certificate"
