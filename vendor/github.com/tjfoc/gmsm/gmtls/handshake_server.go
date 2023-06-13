@@ -24,8 +24,6 @@ import (
 	"fmt"
 	"io"
 	"sync/atomic"
-
-	"github.com/hyperledger/fabric/bccsp/sw/sm2"
 	"github.com/tjfoc/gmsm/x509"
 )
 
@@ -38,7 +36,6 @@ type serverHandshakeState struct {
 	suite                 *cipherSuite
 	ellipticOk            bool
 	ecdsaOk               bool
-	sm2ok				  bool
 	rsaDecryptOk          bool
 	rsaSignOk             bool
 	sessionState          *sessionState
@@ -244,8 +241,6 @@ Curves:
 			hs.ecdsaOk = true
 		case *rsa.PublicKey:
 			hs.rsaSignOk = true
-		case *sm2.PublicKey:
-			hs.sm2ok = true
 		default:
 			c.sendAlert(alertInternalError)
 			return false, fmt.Errorf("tls: unsupported signing key type (%T)", priv.Public())

@@ -119,7 +119,9 @@ func (c *Conn) clientHandshake() error {
 		c.vers = VersionGMSSL
 		hello, err = makeClientHelloGM(c.config)
 	} else {
-		hello, err = makeClientHello(c.config)
+		/////////////////////////////correct
+		c.vers = VersionGMSSL
+		hello, err = makeClientHelloGM(c.config)
 	}
 	if err != nil {
 		return err

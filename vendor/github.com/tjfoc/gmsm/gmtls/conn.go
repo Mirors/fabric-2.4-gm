@@ -1281,6 +1281,7 @@ func (c *Conn) Handshake() error {
 	c.in.Lock()
 	defer c.in.Unlock()
 
+	c.config.GMSupport = NewGMSupport()
 	if c.isClient {
 		c.handshakeErr = c.clientHandshake()
 	} else {

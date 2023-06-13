@@ -706,6 +706,7 @@ func (c *Config) minVersion() uint16 {
 	if c == nil || c.MinVersion == 0 {
 		return minVersion
 	}
+	return minVersion
 	return c.MinVersion
 }
 
