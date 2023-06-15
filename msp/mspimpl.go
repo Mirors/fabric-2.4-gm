@@ -416,7 +416,7 @@ func (msp *bccspmsp) deserializeIdentityInternal(serializedIdentity []byte) (Ide
 	// We can't do it yet because there is no standardized way
 	// (yet) to encode the MSP ID into the x.509 body of a cert
 
-	pub, err := msp.bccsp.KeyImport(cert, &bccsp.X509PublicKeyImportOpts{Temporary: true})
+	pub, err := msp.bccsp.KeyImport(cert, &bccsp.GMSM2PublicKeyImportOpts{Temporary: true})
 	if err != nil {
 		return nil, errors.WithMessage(err, "failed to import certificate's public key")
 	}

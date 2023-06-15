@@ -196,7 +196,13 @@ func (hs *serverHandshakeStateGM) readClientHello() (isResume bool, err error) {
 	// just for test
 	c.config.getCertificate(hs.clientHelloInfo())
 	hs.cert = c.config.Certificates
-
+	if len(hs.cert) < 2 {
+		cert, err := c.config.getCertificate(hs.clientHelloInfo())
+		if err == nil {
+			hs.cert = append(hs.cert, *cert)
+			hs.cert = append(hs.cert, *cert)
+		}
+	}
 	// GMT0024
 	if len(hs.cert) < 2 {
 		c.sendAlert(alertInternalError)

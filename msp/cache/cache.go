@@ -63,13 +63,13 @@ func (id *cachedIdentity) Validate() error {
 }
 
 func (c *cachedMSP) DeserializeIdentity(serializedIdentity []byte) (msp.Identity, error) {
-	id, ok := c.deserializeIdentityCache.get(string(serializedIdentity))
-	if ok {
-		return &cachedIdentity{
-			cache:    c,
-			Identity: id.(msp.Identity),
-		}, nil
-	}
+	//id, ok := c.deserializeIdentityCache.get(string(serializedIdentity))
+	//if ok {
+	//	return &cachedIdentity{
+	//		cache:    c,
+	//		Identity: id.(msp.Identity),
+	//	}, nil
+	//}
 
 	id, err := c.MSP.DeserializeIdentity(serializedIdentity)
 	if err == nil {

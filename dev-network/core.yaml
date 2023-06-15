@@ -149,7 +149,7 @@ peer:
     stateInfoRetentionInterval:
     # Time from startup certificates are included in Alive messages(unit: second)
     publishCertPeriod: 10s
-    # Should we skip verifying block messages or not (currently not in use)
+    # Should we skip verifying block messages or not (currently not in use)N
     skipBlockVerification: false
     # Dial timeout(unit: second)
     dialTimeout: 3s
